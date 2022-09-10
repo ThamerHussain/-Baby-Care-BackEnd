@@ -60,7 +60,7 @@ class ProductSizeChoices(models.TextChoices):
     SMALL = 'Small', 'SMALL'
     MEDIUM = 'Medium', 'MEDIUM'
     LARGE = 'Large', 'LARGE'
-
+#this comment from omer abo resha
 class Product(models.Model):
     name = models.CharField(max_length = 25)
     description = models.CharField(max_length = 255)
