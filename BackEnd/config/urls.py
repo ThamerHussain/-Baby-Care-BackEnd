@@ -16,13 +16,21 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from ninja import NinjaAPI
+from restauth.api import auth_router
+from baby_care.api import baby_router
 
 api = NinjaAPI(
     title='Baby Care App',
     version='0.1',
     description='A BackEnd to offer an APIs to a baby care application',
-    csrf=True,
+    # csrf=True,
 )
+
+
+
+# api.add_router('/todo', todo_router)
+api.add_router('/auth', auth_router)
+api.add_router('/endpoints', baby_router)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
