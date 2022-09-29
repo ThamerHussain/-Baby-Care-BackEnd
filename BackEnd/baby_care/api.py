@@ -1,12 +1,23 @@
 from ninja import Router
 from typing import List
-from baby_care.models import Product
+from baby_care.models import Product , Order , Item , Rate , Profile as pr , Favourite
 from baby_care.schemas import Display_product
 from baby_care.schemas import Display_doctor
+from baby_care.schemas import Rating_In
+from baby_care.schemas import Profile
+from baby_care.schemas import Fav
+from baby_care.schemas import display_fav_prod
+# from baby_care.schemas import fav
+# from baby_care.schemas import Display_Order
+from baby_care.schemas import OrderIn
 from itertools import chain
-
 from baby_care.models import Doctor
+from django.http import Http404
+from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
+from restauth.authotization import AuthBearer
 
+User = get_user_model()
 baby_router = Router()
 
 
@@ -102,7 +113,7 @@ def clothes_only_Large_and_the_sex_and_category_none_from_user(request):
 @baby_router.get('/ClotheSubCategory_only_Bijama_and_the_sex_and_size_none_from_user',
                  response=List[Display_product])
 def ClotheSubCategory_only_Bijama_and_the_sex_and_size_none_from_user(request):
-    produc = Product.objects.all().filter(ClotheSubCategoryChoices="Bijama")
+    produc = Product.objects.all().filter(clothe_sub_category="Bijama")
     return produc
 
 
@@ -112,7 +123,7 @@ def ClotheSubCategory_only_Bijama_and_the_sex_and_size_none_from_user(request):
 @baby_router.get('/ClotheSubCategory_only_Tshirt_and_the_sex_and_size_none_from_user',
                  response=List[Display_product])
 def ClotheSubCategory_only_Tshirt_and_the_sex_and_size_none_from_user(request):
-    produc = Product.objects.all().filter(ClotheSubCategoryChoices="T_Shirt")
+    produc = Product.objects.all().filter(clothe_sub_category="T_Shirt")
     return produc
 
 
@@ -122,7 +133,7 @@ def ClotheSubCategory_only_Tshirt_and_the_sex_and_size_none_from_user(request):
 @baby_router.get('/ClotheSubCategory_only_Underwaer_and_the_sex_and_size_none_from_user',
                  response=List[Display_product])
 def ClotheSubCategory_only_Underwaer_and_the_sex_and_size_none_from_user(request):
-    produc = Product.objects.all().filter(ClotheSubCategoryChoices="Underwaer")
+    produc = Product.objects.all().filter(clothe_sub_category="Underwaer")
     return produc
 
 
@@ -149,7 +160,7 @@ def clothe_sex_female_size_small_category_none(request):
 # -clothe_sex_male_size_mediuem_category_none-
 @baby_router.get('/clothe_sex_male_size_mediuem_category_none', response=List[Display_product])
 def clothe_sex_male_size_mediuem_category_none(request):
-    produc = Product.objects.all().filter(category="Clothe", sex="Male", size="Medium")
+    produc = Product.objects.all().filter(category="Clothe", sex="Male", size="Medium",clothe_sub_category="T_Shirt")
     return produc
 
 
@@ -184,7 +195,7 @@ def clothe_sex_female_size_Large_category_none(request):
 @baby_router.get('/clothe_sex_male_size_small_category_Bijama', response=List[Display_product])
 def clothe_sex_male_size_small_category_Bijama(request):
     produc = Product.objects.all().filter(category="Clothe", sex="Male", size="Small",
-                                          ClotheSubCategoryChoices="Bijama")
+                                          clothe_sub_category="Bijama")
     return produc
 
 
@@ -192,7 +203,7 @@ def clothe_sex_male_size_small_category_Bijama(request):
 @baby_router.get('/clothe_sex_male_size_small_category_T_Shirt', response=List[Display_product])
 def clothe_sex_male_size_small_category_T_Shirt(request):
     produc = Product.objects.all().filter(category="Clothe", sex="Male", size="Small",
-                                          ClotheSubCategoryChoices="T_Shirt")
+                                          clothe_sub_category="T_Shirt")
     return produc
 
 
@@ -200,7 +211,7 @@ def clothe_sex_male_size_small_category_T_Shirt(request):
 @baby_router.get('/clothe_sex_male_size_small_category_Underwaer', response=List[Display_product])
 def clothe_sex_male_size_small_category_Underwaer(request):
     produc = Product.objects.all().filter(category="Clothe", sex="Male", size="Small",
-                                          ClotheSubCategoryChoices="Underwaer")
+                                          clothe_sub_category="Underwaer")
     return produc
 
 
@@ -216,7 +227,7 @@ def clothe_sex_male_size_small_category_Underwaer(request):
 @baby_router.get('/clothe_sex_male_size_medium_category_Bijama', response=List[Display_product])
 def clothe_sex_male_size_medium_category_Bijama(request):
     produc = Product.objects.all().filter(category="Clothe", sex="Male", size="Medium",
-                                          ClotheSubCategoryChoices="Bijama")
+                                          clothe_sub_category="Bijama")
     return produc
 
 
@@ -224,7 +235,7 @@ def clothe_sex_male_size_medium_category_Bijama(request):
 @baby_router.get('/clothe_sex_male_size_Large_category_Bijama', response=List[Display_product])
 def clothe_sex_male_size_Large_category_Bijama(request):
     produc = Product.objects.all().filter(category="Clothe", sex="Male", size="Large",
-                                          ClotheSubCategoryChoices="Bijama")
+                                          clothe_sub_category="Bijama")
     return produc
 
 
@@ -232,7 +243,7 @@ def clothe_sex_male_size_Large_category_Bijama(request):
 @baby_router.get('/clothe_sex_male_size_medium_category_T_Shirt', response=List[Display_product])
 def clothe_sex_male_size_medium_category_T_Shirt(request):
     produc = Product.objects.all().filter(category="Clothe", sex="Male", size="Medium",
-                                          ClotheSubCategoryChoices="T_Shirt")
+                                          clothe_sub_category="T_Shirt")
     return produc
 
 
@@ -240,7 +251,7 @@ def clothe_sex_male_size_medium_category_T_Shirt(request):
 @baby_router.get('/clothe_sex_male_size_Large_category_T_Shirt', response=List[Display_product])
 def clothe_sex_male_size_Large_category_T_Shirt(request):
     produc = Product.objects.all().filter(category="Clothe", sex="Large", size="Medium",
-                                          ClotheSubCategoryChoices="T_Shirt")
+                                          clothe_sub_category="T_Shirt")
     return produc
 
 
@@ -248,7 +259,7 @@ def clothe_sex_male_size_Large_category_T_Shirt(request):
 @baby_router.get('/clothe_sex_male_size_medium_category_Underwaer', response=List[Display_product])
 def clothe_sex_male_size_medium_category_Underwaer(request):
     produc = Product.objects.all().filter(category="Clothe", sex="Male", size="Medium",
-                                          ClotheSubCategoryChoices="Underwaer")
+                                          clothe_sub_category="Underwaer")
     return produc
 
 
@@ -256,7 +267,7 @@ def clothe_sex_male_size_medium_category_Underwaer(request):
 @baby_router.get('/clothe_sex_male_size_Large_category_Underwaer', response=List[Display_product])
 def clothe_sex_male_size_Large_category_Underwaer(request):
     produc = Product.objects.all().filter(category="Clothe", sex="Male", size="Large",
-                                          ClotheSubCategoryChoices="Underwaer")
+                                          clothe_sub_category="Underwaer")
     return produc
 
 
@@ -264,7 +275,7 @@ def clothe_sex_male_size_Large_category_Underwaer(request):
 @baby_router.get('/clothe_sex_Female_size_Small_category_Bijama', response=List[Display_product])
 def clothe_sex_Female_size_Small_category_Bijama(request):
     produc = Product.objects.all().filter(category="Clothe", sex="Female", size="Medium",
-                                          ClotheSubCategoryChoices="Bijama")
+                                          clothe_sub_category="Bijama")
     return produc
 
 
@@ -272,7 +283,7 @@ def clothe_sex_Female_size_Small_category_Bijama(request):
 @baby_router.get('/clothe_sex_Female_size_medium_category_Bijama', response=List[Display_product])
 def clothe_sex_Female_size_medium_category_Bijama(request):
     produc = Product.objects.all().filter(category="Clothe", sex="Female", size="Medium",
-                                          ClotheSubCategoryChoices="Bijama")
+                                          clothe_sub_category="Bijama")
     return produc
 
 
@@ -280,7 +291,7 @@ def clothe_sex_Female_size_medium_category_Bijama(request):
 @baby_router.get('/clothe_sex_Female_size_Large_category_Bijama', response=List[Display_product])
 def clothe_sex_Female_size_Large_category_Bijama(request):
     produc = Product.objects.all().filter(category="Clothe", sex="Female", size="Large",
-                                          ClotheSubCategoryChoices="Bijama")
+                                          clothe_sub_category="Bijama")
     return produc
 
 
@@ -288,15 +299,42 @@ def clothe_sex_Female_size_Large_category_Bijama(request):
 @baby_router.get('/clothe_sex_Female_size_Small_category_tshirt', response=List[Display_product])
 def clothe_sex_Female_size_Small_category_tshirt(request):
     produc = Product.objects.all().filter(category="Clothe", sex="Female", size="Small",
-                                          ClotheSubCategoryChoices="T_Shirt")
+                                          clothe_sub_category="T_Shirt")
     return produc
+
+
+
+
+
+# # -clothe_sex_male_size_mediuem_category_none-
+# @baby_router.get('/clothe_sex_male_size_mediuem_category_none', response=List[Display_product])
+# def clothe_sex_male_size_mediuem_category_none(request):
+#     produc = Product.objects.all().filter(category="Clothe", sex="Male", size="Medium")
+#     return produc
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # -clothe_sex_Female_size_medium_category_tshirt-
 @baby_router.get('/clothe_sex_Female_size_medium_category_tshirt', response=List[Display_product])
 def clothe_sex_Female_size_medium_category_tshirt(request):
     produc = Product.objects.all().filter(category="Clothe", sex="Female", size="Medium",
-                                          ClotheSubCategoryChoices="T_Shirt")
+                                          clothe_sub_category="T_Shirt")
     return produc
 
 
@@ -304,7 +342,7 @@ def clothe_sex_Female_size_medium_category_tshirt(request):
 @baby_router.get('/clothe_sex_Female_size_Large_category_tshirt', response=List[Display_product])
 def clothe_sex_Female_size_Large_category_tshirt(request):
     produc = Product.objects.all().filter(category="Clothe", sex="Female", size="Large",
-                                          ClotheSubCategoryChoices="T_Shirt")
+                                          clothe_sub_category="T_Shirt")
     return produc
 
 
@@ -312,7 +350,7 @@ def clothe_sex_Female_size_Large_category_tshirt(request):
 @baby_router.get('/clothe_sex_Female_size_Small_category_Underwaer', response=List[Display_product])
 def clothe_sex_Female_size_Small_category_Underwaer(request):
     produc = Product.objects.all().filter(category="Clothe", sex="Female", size="Small",
-                                          ClotheSubCategoryChoices="Underwaer")
+                                          clothe_sub_category="Underwaer")
     return produc
 
 
@@ -320,7 +358,7 @@ def clothe_sex_Female_size_Small_category_Underwaer(request):
 @baby_router.get('/clothe_sex_Female_size_medium_category_Underwaer', response=List[Display_product])
 def clothe_sex_Female_size_medium_category_Underwaer(request):
     produc = Product.objects.all().filter(category="Clothe", sex="Female", size="Medium",
-                                          ClotheSubCategoryChoices="Underwaer")
+                                          clothe_sub_category="Underwaer")
     return produc
 
 
@@ -328,12 +366,12 @@ def clothe_sex_Female_size_medium_category_Underwaer(request):
 @baby_router.get('/clothe_sex_Female_size_Large_category_Underwaer', response=List[Display_product])
 def clothe_sex_Female_size_Large_category_Underwaer(request):
     produc = Product.objects.all().filter(category="Clothe", sex="Female", size="Large",
-                                          ClotheSubCategoryChoices="Underwaer")
+                                          clothe_sub_category="Underwaer")
     return produc
 
 
 # -diaper by default-
-@baby_router.get('/diaper_by_default/{filter}/', response=List[Display_product])
+@baby_router.get('/diaper_by_default', response=List[Display_product])
 def diaper_by_default(request):
     produc = Product.objects.all(category="Diaper")
     return produc
@@ -370,21 +408,21 @@ def food_by_default(request):
 # -food_by_milk_and_age_none-
 @baby_router.get('/food_by_milk_and_age_none', response=List[Display_product])
 def food_by_milk_and_age_none(request):
-    produc = Product.objects.all().filter(category="Nutrition", FoodSubCategoryChoices="Milk")
+    produc = Product.objects.all().filter(category="Nutrition", food_sub_category="Milk")
     return produc
 
 
 # -food_by_milk_and_age_One_To_Six_Months-
 @baby_router.get('/food_by_milk_and_age_One_To_Six_Months', response=List[Display_product])
 def food_by_milk_and_age_One_To_Six_Months(request):
-    produc = Product.objects.all().filter(category="Nutrition", FoodSubCategoryChoices="Milk", age="One_To_Six_Months")
+    produc = Product.objects.all().filter(category="Nutrition", food_sub_category="Milk", age="One_To_Six_Months")
     return produc
 
 
 # -food_by_milk_and_age_More_Than_Six_Months-
 @baby_router.get('/food_by_milk_and_age_More_Than_Six_Months', response=List[Display_product])
 def food_by_milk_and_age_More_Than_Six_Months(request):
-    produc = Product.objects.all().filter(category="Nutrition", FoodSubCategoryChoices="Milk",
+    produc = Product.objects.all().filter(category="Nutrition", food_sub_category="Milk",
                                           age="More_Than_Six_Months")
     return produc
 
@@ -392,14 +430,14 @@ def food_by_milk_and_age_More_Than_Six_Months(request):
 # -food_by_Instant_Cereal_and_age_none-
 @baby_router.get('/food_by_Instant_Cereal_and_age_none', response=List[Display_product])
 def food_by_Instant_Cereal_and_age_none(request):
-    produc = Product.objects.all().filter(category="Nutrition", FoodSubCategoryChoices="Instant_Cereal")
+    produc = Product.objects.all().filter(category="Nutrition", food_sub_category="Instant_Cereal")
     return produc
 
 
 # -food_by_Instant_Cereal_and_age_One_Than_Six_Months-
 @baby_router.get('/food_by_milk_and_age_More_Than_Six_Months', response=List[Display_product])
 def food_by_milk_and_age_More_Than_Six_Months(request):
-    produc = Product.objects.all().filter(category="Nutrition", FoodSubCategoryChoices="Instant_Cereal",
+    produc = Product.objects.all().filter(category="Nutrition", food_sub_category="Instant_Cereal",
                                           age="One_To_Six_Months")
     return produc
 
@@ -407,7 +445,7 @@ def food_by_milk_and_age_More_Than_Six_Months(request):
 # -food_by_Instant_Cereal_and_age_More_Than_Six_Months-
 @baby_router.get('/food_by_Instant_Cereal_and_age_More_Than_Six_Months', response=List[Display_product])
 def food_by_Instant_Cereal_and_age_More_Than_Six_Months(request):
-    produc = Product.objects.all().filter(category="Nutrition", FoodSubCategoryChoices="Instant_Cereal",
+    produc = Product.objects.all().filter(category="Nutrition", food_sub_category="Instant_Cereal",
                                           age="More_Than_Six_Months")
     return produc
 
@@ -422,24 +460,24 @@ def all_FoodTool(request):
 # -FoodTool_Cup-
 @baby_router.get('/FoodTool_Cup', response=List[Display_product])
 def FoodTool_Cup(request):
-    produc = Product.objects.all().filter(category="Equipment", FoodToolSubCategoryChoices="Cup")
+    produc = Product.objects.all().filter(category="Equipment", food_tool_sub_category="Cup")
     return produc
 
 
 # -FoodTool_Baby_Bottle-
 @baby_router.get('/FoodTool_Baby_Bottle', response=List[Display_product])
 def FoodTool_Baby_Bottle(request):
-    produc = Product.objects.all().filter(category="Equipment", FoodToolSubCategoryChoices="Baby_Bottle")
+    produc = Product.objects.all().filter(category="Equipment", food_tool_sub_category="Baby_Bottle")
     return produc
 
 
 # -ShowerTool_by_default-
 @baby_router.get('/ShowerTool_by_default', response=List[Display_product])
 def ShowerTool_by_default(request):
-    prod = Product.objects.all().filter(ShowerToolSubCategoryChoices="Soap")
-    prod2 = Product.objects.all().filter(ShowerToolSubCategoryChoices="Towel")
-    prod3 = Product.objects.all().filter(ShowerToolSubCategoryChoices="Loofah")
-    prod4 = Product.objects.all().filter(ShowerToolSubCategoryChoices="Shampoo")
+    prod = Product.objects.all().filter(shower_tool_sub_category="Soap")
+    prod2 = Product.objects.all().filter(shower_tool_sub_category="Towel")
+    prod3 = Product.objects.all().filter(shower_tool_sub_category="Loofah")
+    prod4 = Product.objects.all().filter(shower_tool_sub_category="Shampoo")
 
     result_list = list(chain(prod, prod2, prod3, prod4))
     return result_list
@@ -448,28 +486,28 @@ def ShowerTool_by_default(request):
 # -ShowerTool_by_soap-
 @baby_router.get('/ShowerTool_by_soap', response=List[Display_product])
 def ShowerTool_by_soap(request):
-    prod = Product.objects.all().filter(ShowerToolSubCategoryChoices="Soap")
+    prod = Product.objects.all().filter(shower_tool_sub_category="Soap")
     return prod
 
 
 # -ShowerTool_by_Towel-
 @baby_router.get('/ShowerTool_by_Towel', response=List[Display_product])
 def ShowerTool_by_Towel(request):
-    prod = Product.objects.all().filter(ShowerToolSubCategoryChoices="Towel")
+    prod = Product.objects.all().filter(shower_tool_sub_category="Towel")
     return prod
 
 
 # -ShowerTool_by_Loofah-
 @baby_router.get('/ShowerTool_by_Loofah', response=List[Display_product])
 def ShowerTool_by_Loofah(request):
-    prod = Product.objects.all().filter(ShowerToolSubCategoryChoices="Loofah")
+    prod = Product.objects.all().filter(shower_tool_sub_category="Loofah")
     return prod
 
 
 # -ShowerTool_by_Shampoo-
 @baby_router.get('/ShowerTool_by_Shampoo', response=List[Display_product])
 def ShowerTool_by_Shampoo(request):
-    prod = Product.objects.all().filter(ShowerToolSubCategoryChoices="Shampoo")
+    prod = Product.objects.all().filter(shower_tool_sub_category="Shampoo")
     return prod
 
 
@@ -511,7 +549,7 @@ def all_shoe_with_size_More_Than_Six_Months(request):
 
 
 
-# -all_shoe_with_with_sex_female_and_One_To_Six_Months
+# -all_shoe_with_with_sex_female_and_One_To_Six_MonthsShowerTool_by_Loofah
 @baby_router.get('/all_shoe_with_with_sex_female_and_One_To_Six_Months', response=List[Display_product])
 def all_shoe_with_with_sex_female_and_One_To_Six_Months(request):
     prod = Product.objects.all().filter(category="Shoe",sex="Female",size="One_To_Six_Months")
@@ -554,7 +592,7 @@ def all_Vehicle_default(request):
 # -Vehicle_only_Jogger
 @baby_router.get('/Vehicle_only_Jogger',response=List[Display_product])
 def Vehicle_only_Jogger(request):
-    prod = Product.objects.all().filter(category="Vehicle",VehicleSubCategoryChoices="Jogger")
+    prod = Product.objects.all().filter(category="Vehicle",vehicle_sub_category="Jogger")
     return prod
 
 
@@ -562,7 +600,7 @@ def Vehicle_only_Jogger(request):
 # -Vehicle_only_Stroller
 @baby_router.get('/Vehicle_only_Stroller',response=List[Display_product])
 def Vehicle_only_Stroller(request):
-    prod = Product.objects.all().filter(category="Vehicle",VehicleSubCategoryChoices="Stroller")
+    prod = Product.objects.all().filter(category="Vehicle",vehicle_sub_category="Stroller")
     return prod
 
 
@@ -578,7 +616,7 @@ def all_Container(request):
 # -Container_with_Fixed
 @baby_router.get('/Container_with_Fixed',response=List[Display_product])
 def Container_with_Fixed(request):
-    prod = Product.objects.all().filter(category="Container",ContainerSubCategoryChoices="Fixed")
+    prod = Product.objects.all().filter(category="Container",container_sub_category="Fixed")
     return prod
 
 
@@ -586,7 +624,7 @@ def Container_with_Fixed(request):
 # -Container_with_Movable
 @baby_router.get('/Container_with_Movable',response=List[Display_product])
 def Container_with_Movable(request):
-    prod = Product.objects.all().filter(category="Container",ContainerSubCategoryChoices="Movable")
+    prod = Product.objects.all().filter(category="Container",container_sub_category="Movable")
     return prod
 
 
@@ -602,7 +640,7 @@ def all_Furniture(request):
 # -all_Furniture_cover
 @baby_router.get('/all_Furniture_cover',response=List[Display_product])
 def all_Furniture_cover(request):
-    prod = Product.objects.all().filter(category="Furniture",FurnitureSubCategoryChoices="Cover")
+    prod = Product.objects.all().filter(category="Furniture",furniture_sub_category="Cover")
     return prod
 
 
@@ -610,7 +648,7 @@ def all_Furniture_cover(request):
 # -all_Furniture_Pillow
 @baby_router.get('/all_Furniture_Pillow',response=List[Display_product])
 def all_Furniture_Pillow(request):
-    prod = Product.objects.all().filter(category="Furniture",FurnitureSubCategoryChoices="Pillow")
+    prod = Product.objects.all().filter(category="Furniture",furniture_sub_category="Pillow")
     return prod
 
 
@@ -618,23 +656,40 @@ def all_Furniture_Pillow(request):
 # -all_Furniture_Mattress
 @baby_router.get('/all_Furniture_Mattress',response=List[Display_product])
 def all_Furniture_Mattress(request):
-    prod = Product.objects.all().filter(category="Furniture",FurnitureSubCategoryChoices="Mattress")
+    prod = Product.objects.all().filter(category="Furniture",furniture_sub_category="Mattress")
     return prod
 
 
 # -searching_for_product
 @baby_router.get('/searching_for_product/{search_for_product}/',response=List[Display_product])
 def searching_for_product(request, search_for_product:str):
-    prod = Product.objects.all().filter(category= search_for_product)
-    return prod
+    try:
+        prod = Product.objects.all().filter(category= search_for_product)
+        return prod
+    finally:
+        if not prod:
+            raise Http404(f'this {search_for_product} doesnt exist')
+
 
 
 
 # -searching_for_doctor
-@baby_router.get('/searching_for_doctor/{search_for_doctor}/',response=List[Display_doctor])
+@baby_router.get('/searching_for_doctor/{search_for_doctor}/',response =List[Display_doctor])
 def searching_for_doctor(request, search_for_doctor:str):
-    prod = Doctor.objects.all().filter(full_name= search_for_doctor)
-    return prod
+    try:
+        prod = Doctor.objects.all().filter(full_name= search_for_doctor)
+        return prod
+    finally:
+        if not prod:
+            raise Http404(f'this {search_for_doctor} doesnt exist')
+
+
+
+# @baby_router.get('/get_all_order', response=List[Display_Order])
+# def get_order(request):
+#     order = Order.objects.all()
+#     return order
+
 
 
 #3 - empty the cart and buy all item inside the cart
@@ -644,3 +699,96 @@ def searching_for_doctor(request, search_for_doctor:str):
 # get order
 #check out the order
 # create cart default = false
+
+
+
+
+
+
+@baby_router.post("/Order" , response=OrderIn, auth= AuthBearer())
+def create_order(request, payload: OrderIn):
+    user = get_object_or_404(User, email= request.auth['email'])
+    try:
+        order = Order.objects.get(ordered=False, user=user)
+
+        # order.items.add()
+    except Order.DoesNotExist:
+        order = Order.objects.create(
+                user=user,
+                status_id=payload.status_id,
+                note=payload.note,
+                ref_code= payload.ref_code,
+                ordered=False,
+                address_id=payload.address_id
+                )
+
+        items = Item.objects.filter(id__in=payload.items_id)
+        order.items.add(*items)
+        items.update(ordered=True)
+        items.save()
+        order.save()
+
+    return order
+
+# user = get_object_or_404(User, email= request.auth['email'])
+# order = Order.objects.get(ordered=False, user=user)
+# item = Item.objects.filter(id=item_id)
+# order.items.add(*item)
+# item.update(ordered=True)
+# item.save()
+# order.save()
+
+
+
+@baby_router.post("/rating" , response=Rating_In, auth= AuthBearer())
+def create_rating(request , payload:Rating_In):
+    user = get_object_or_404(User, email= request.auth['email'])
+
+    rating = Rate.objects.create(
+                user=user,
+                product_id = payload.product_id,
+                value = payload.value,
+                comment = payload.comment
+                
+                )
+    rating.save()
+    return rating
+
+
+
+# @baby_router.get('/display all profile', response=List[Profile])
+# def display_all_profile(request):
+#     prof = pr.objects.all()
+#     return prof
+
+
+
+
+@baby_router.get('/display_current_profile', response=List[Profile] , auth= AuthBearer())
+def display_current_profile(request):
+    user = get_object_or_404(User, email= request.auth['email'])
+    pro = pr.objects.filter(user = user)
+    return pro
+
+
+
+
+
+@baby_router.post("/Create_Favourite" , response=Fav, auth= AuthBearer())
+def Create_Favourite(request , payload:Fav):
+    user = get_object_or_404(User, email= request.auth['email'])
+
+    fa = Favourite.objects.create(
+                user=user,
+                product_id = payload.product_id,
+                
+                )
+    fa.save()
+    return fa
+
+
+@baby_router.get('/get_the_fav_prod_from_the_current_user', response=List[display_fav_prod] , auth= AuthBearer())
+def get_the_fav_prod_from_the_current_user(request):
+    user = get_object_or_404(User, email= request.auth['email'])
+    fav = Favourite.objects.filter(user = user)
+    return fav
