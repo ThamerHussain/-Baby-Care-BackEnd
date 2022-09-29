@@ -177,13 +177,9 @@ class Address(models.Model):
 
 
 class Item(models.Model):
-    """
-    Product can live alone in the system, while
-    Item can only live within an order
-    """
     user = models.ForeignKey(EmailAccount, verbose_name='user', related_name='items', on_delete=models.CASCADE)
     product = models.ForeignKey(Product, verbose_name='product', on_delete=models.CASCADE)
-    item_qty = models.IntegerField('item_qty')
+    item_qty = models.IntegerField('item_qty' , default = 1)
     ordered = models.BooleanField('ordered')
 
     def __str__(self):
@@ -269,8 +265,17 @@ class Rate(models.Model):
         value = models.IntegerField()
         comment = models.CharField(max_length=150)
         def __str__(self):
-         return f'{self.comment} - {"BY"} - {self.user.first_name}'
+            return f'{self.comment} - {" BY "} - {self.user.first_name}'
 
 
 
 
+
+class Card(models.Model):
+    user = models.ForeignKey(EmailAccount, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    item_qty = models.IntegerField('item_qty' , default = 1 , null=True , blank=True)
+
+
+    def __str__(self):
+        return f'{self.product.name} - {" BY "} - {self.user.first_name}'

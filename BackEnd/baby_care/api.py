@@ -6,6 +6,9 @@ from baby_care.schemas import Display_doctor
 from baby_care.schemas import Rating_In
 from baby_care.schemas import Profile
 from baby_care.schemas import Fav
+from baby_care.schemas import qu
+from baby_care.schemas import display_card
+from baby_care.schemas import Card_Info
 from baby_care.schemas import display_fav_prod
 # from baby_care.schemas import fav
 # from baby_care.schemas import Display_Order
@@ -792,3 +795,48 @@ def get_the_fav_prod_from_the_current_user(request):
     user = get_object_or_404(User, email= request.auth['email'])
     fav = Favourite.objects.filter(user = user)
     return fav
+
+
+
+
+@baby_router.post("/Add_item_to_card" , response=Card_Info, auth= AuthBearer())
+def Add_item_to_card(request , payload:Card_Info):
+    user = get_object_or_404(User, email= request.auth['email'])
+
+    card = Card.objects.create(
+                user=user,
+                product_id = payload.product_id,
+                
+                )
+    card.save()
+    return card
+
+
+
+
+
+@baby_router.get('/get_the_card_from_the_current_user', response=List[display_card] , auth= AuthBearer())
+def get_the_card_from_the_current_user(request):
+    user = get_object_or_404(User, email= request.auth['email'])
+    card = Card.objects.filter(user = user)
+    return card
+
+
+
+@baby_router.put("/change_qu_+", response=qu , auth= AuthBearer())
+def change_quplu(request , payload: qu):
+    user = get_object_or_404(User, email= request.auth['email'])
+    item = Item.objects.get(id = payload.product_id)
+    item.item_qty=item.item_qty +1
+    item.save()
+    return {''}
+
+
+
+@baby_router.put("/change_qu_-" ,response=qu , auth= AuthBearer())
+def change_qu_min(request , payload:qu):
+    user = get_object_or_404(User, email= request.auth['email'])
+    item = Item.objects.get(id = payload.product_id)
+    item.item_qty=item.item_qty -1
+    item.save()
+    return {''}

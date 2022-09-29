@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Product, Doctor, Item, Order, OrderStatus, Address , Favourite  , Profile , Rate
+from .models import Product, Doctor, Item, Order, OrderStatus, Address , Favourite  , Profile , Rate , Card
 
 # Register your models here.
 class Config(admin.ModelAdmin):
@@ -14,3 +14,4 @@ class Config(admin.ModelAdmin):
     # admin.site.register(Comment)
     admin.site.register(Profile)
     admin.site.register(Rate)
+    admin.site.register(Card)

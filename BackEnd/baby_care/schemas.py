@@ -113,3 +113,23 @@ class Fav(Schema):
 class display_fav_prod(Schema):
     user: User_Info
     product: Display_product
+
+
+
+
+class Card_Info(Schema):
+    product_id: int
+
+
+
+
+class display_card(Schema):
+    user: User_Info
+    product: Display_product
+
+
+
+
+
+class qu(Schema):
+    product_id: int
