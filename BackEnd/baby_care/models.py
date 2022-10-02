@@ -149,10 +149,32 @@ class Product(models.Model):
 #     friday = models.CharField(default = 'Friday', max_length=20, blank = True, null = True)
 #     saturday = models.CharField(default = 'Saturday', max_length=20, blank = True, null = True)
 
+
+class locationChoices(models.TextChoices):
+    BAGHDAD = 'Baghdad', 'BAGHDAD'
+    BASRAH = 'Basrah', 'BASRAH'
+    MOSUL = 'Mosul' , 'MOSUL'
+    OTHER = 'Other' , 'OTHER'
+
+class sexChoices(models.TextChoices):
+    MALE = 'Male', 'MALE'
+    FEMALE = 'Female', 'FEMALE'
+
+class availabilityChoices(models.TextChoices):
+    AVAILABLE = 'Available', 'AVAILABLE'
+    NOTAVAILABLE = 'NotAvailable', 'NOTAVAILABLE'
+
+
+
 class Doctor(models.Model):
     full_name = models.CharField(max_length = 30)
     image = models.ImageField(upload_to = None)
     Specialization = models.CharField(max_length = 20)
+
+    location = models.CharField(max_length = 255, choices = locationChoices.choices)
+    sex = models.CharField(max_length = 255, choices = sexChoices.choices)
+    availability = models.CharField(max_length = 255, choices = availabilityChoices.choices)
+
     # Working_hours = models.CharField(max_length = 20)
     cv = models.CharField(max_length = 250)
     # clinic_opening_hours = models.ForeignKey(ClinicOpeningHours, on_delete = models.CASCADE)
@@ -185,7 +207,7 @@ class Item(models.Model):
     user = models.ForeignKey(EmailAccount, verbose_name='user', related_name='items', on_delete=models.CASCADE)
     product = models.ForeignKey(Product, verbose_name='product', on_delete=models.CASCADE)
     item_qty = models.IntegerField('item_qty', default = 1)
-    ordered = models.BooleanField('ordered')
+    ordered = models.BooleanField('ordered', default = False)
 
     def __str__(self):
         return self.product.name

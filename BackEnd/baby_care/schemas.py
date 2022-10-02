@@ -1,43 +1,57 @@
 from ninja import Schema
 
 
-# all product
+# one product 
 class Display_product(Schema):
     name: str
-    description: str
     price: str
     image: str
     stars: int
-    category: str
-    ClotheSubCategoryChoices: str = None
-    FoodSubCategoryChoices: str = None
-    FoodToolSubCategoryChoices: str = None
-    ShowerToolSubCategoryChoices: str = None
-    VehicleSubCategoryChoices: str = None
-    ContainerSubCategoryChoices: str = None
-    FurnitureSubCategoryChoices: str = None
-    VehicleSubCategoryChoices: str = None
-    sex: str = None
-    size: str = None
-    age: str = None
+    description: str
+    is_favorite: bool
+
+
+class Display_Cart_products(Schema):
+    name: str
+    price: str
+    image: str
+
+
+class Display_products(Schema):
+    name: str
+    # description: str
+    price: str
+    image: str
+    stars: int
+    # category: str
+    # ClotheSubCategoryChoices: str = None
+    # FoodSubCategoryChoices: str = None
+    # FoodToolSubCategoryChoices: str = None
+    # ShowerToolSubCategoryChoices: str = None
+    # VehicleSubCategoryChoices: str = None
+    # ContainerSubCategoryChoices: str = None
+    # FurnitureSubCategoryChoices: str = None
+    # VehicleSubCategoryChoices: str = None
+    # sex: str = None
+    # size: str = None
+    # age: str = None
     # is_favourite: bool
     # it_bought: bool
 
-
 # all doctors
-class Display_doctor(Schema):
+class Display_doctors(Schema):
     full_name: str
 
     Specialization: str
-    cv: str
-    phone_number: str
-    sunday: str
-    monday: str
-    tuesday: str
-    wednesday: str
-    thursday: str
-    friday: str
-    saturday: str
+    # cv: str
+    image: str
+    # sunday: str
+    # monday: str
+    # tuesday: str
+    # wednesday: str
+    # thursday: str
+    # friday: str
+    # saturday: str
 #-----------------------------------
 
 class User_Info(Schema):
@@ -105,31 +119,39 @@ class Profile(Schema):
 
 
 class Fav(Schema):
-    product_id: int
+    # product_id: int
+    name:str
 
 
 
 
 class display_fav_prod(Schema):
-    user: User_Info
-    product: Display_product
+    # user: User_Info
+    product: Display_products
 
 
 
 
 class Cart_Info(Schema):
-    product_id: int
+    # product_id: int
+    name:str
 
 
 
 
 class display_cart(Schema):
-    user: User_Info
-    product: Display_product
+    # user: User_Info
+    product: Display_Cart_products
+    item_qty: int
 
 
 
 
 
 class qu(Schema):
+    # product_id: int
+    name:str
+
+
+class ProductId(Schema):
     product_id: int
