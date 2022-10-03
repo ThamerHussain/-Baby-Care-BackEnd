@@ -11,9 +11,38 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+
+
+#
+# PROJECT_DIR  = os.path.dirname(__file__)
+
+# MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+# MEDIA_URL = '/media/'
+#
+# print(BASE_DIR)
+# STATIC_ROOT = os.path.join(BASE_DIR,'static')
+STATIC_ROOT = '/home/Thamer/static'
+STATIC_URL = '/static/'
+
+# STATICFILES_DIRS = (
+    # Put strings here, like "/home/html/static" or "C:/www/django/static".
+    # Always use forward slashes, even on Windows.
+    # Don't forget to use absolute paths, not relative paths.
+    # os.path.join(BASE_DIR, 'staticfiles'),
+# )
+
+
+
+
+
+
+
+# STATIC_ROOT = os.path.join(BASE_DIR,'static')
+# STATIC_URL = 'static/'
 
 
 # Quick-start development settings - unsuitable for production
@@ -28,7 +57,7 @@ DEBUG = True
 # import socket
 # socket.getaddrinfo('10.0.2.2', 8080)
 
-ALLOWED_HOSTS = ['10.0.2.2', '127.0.0.1']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -126,7 +155,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = 'static/'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field

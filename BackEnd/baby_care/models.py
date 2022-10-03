@@ -1,7 +1,7 @@
 from distutils.command.upload import upload
 from urllib.parse import urlsplit
 from django.db import models
-from restauth.models import EmailAccount 
+from restauth.models import EmailAccount
 # Create your models here.
 
 class ProductCategoryChoices(models.TextChoices):
@@ -13,6 +13,7 @@ class ProductCategoryChoices(models.TextChoices):
     EQUIPMENT = 'Equipment', 'EQUIPMENT'
     CONTAINERS = 'Container', 'CONTAINER'
     SHOWER_TOOLS = 'Shower_Tool', 'SHOWER_TOOL'
+    FURNITURE = 'Furniture', 'FURNITURE'
 
 
 # class ProductSubCategoryChoices(models.TextChoices):
@@ -41,7 +42,7 @@ class ProductCategoryChoices(models.TextChoices):
 
 #     class ContainerSubCategoryChoices(models.TextChoices):
 #         FIXED = 'Fixed', 'FIXED'
-#         MOVABLE = 'Movable', 'MOVABLE' 
+#         MOVABLE = 'Movable', 'MOVABLE'
 
 #     class FurnitureSubCategoryChoices(models.TextChoices):
 #         COVER = 'Cover', 'COVER'
@@ -111,7 +112,7 @@ class Product(models.Model):
     name = models.CharField(max_length = 25)
     description = models.CharField(max_length = 255)
     price = models.CharField(max_length = 7)
-    image = models.ImageField(upload_to = None)
+    image = models.ImageField(upload_to = 'static')
     stars = models.CharField(max_length = 1)
     category = models.CharField(max_length = 20, choices = ProductCategoryChoices.choices)
     clothe_sub_category = models.CharField(max_length = 255, choices = ClotheSubCategoryChoices.choices, blank = True, null = True)
@@ -126,10 +127,14 @@ class Product(models.Model):
     age = models.CharField(max_length = 20, choices = AgeChoices.choices, blank = True, null = True)
     # is_favourite = models.BooleanField(default = False)
     # it_bought = models.BooleanField(default = False)
-    
-    
+
+
     def __str__(self):
         return f'{self.name} - {self.stars}'
+
+    @property
+    def image_url(self):     # !!! <--------------------------
+        return self.image.url
 
     @property
     def get_avg_rates(self):
@@ -168,7 +173,7 @@ class availabilityChoices(models.TextChoices):
 
 class Doctor(models.Model):
     full_name = models.CharField(max_length = 30)
-    image = models.ImageField(upload_to = None)
+    image = models.ImageField(upload_to = 'static')
     Specialization = models.CharField(max_length = 20)
 
     location = models.CharField(max_length = 255, choices = locationChoices.choices)
@@ -188,6 +193,9 @@ class Doctor(models.Model):
     saturday = models.CharField(default = 'Saturday ', max_length=20, blank = True, null = True)
     def __str__(self):
         return self.full_name
+    @property
+    def image_url(self):     # !!! <--------------------------
+        return self.image.url
 
 class Address(models.Model):
     city = models.CharField(max_length=10 , null=True , blank=True)

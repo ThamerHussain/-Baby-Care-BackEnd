@@ -18,6 +18,13 @@ from django.urls import path
 from ninja import NinjaAPI
 from restauth.api import auth_router
 from baby_care.api import baby_router
+# from django.conf.urls.defaults import *
+from django.conf import settings
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.conf.urls.static import static
+from django.conf.urls import include#, url
+from django.urls import re_path
+
 
 api = NinjaAPI(
     title='Baby Care App',
@@ -32,7 +39,38 @@ api = NinjaAPI(
 api.add_router('/auth', auth_router)
 api.add_router('/endpoints', baby_router)
 
+
+
+
+
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/', api.urls)
-]
+#   url(r'^admin/', include(admin.site.urls)),
+#   url(r'^api/', include(api.urls)),
+  re_path(r'^admin/', admin.site.urls),
+  re_path(r'^api/', api.urls),
+#   *staticfiles_urlpatterns()
+  *static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+  ]
+
+
+
+
+
+# urlpatterns = patterns('',
+    # url(r'^admin/', include(admin.site.urls)),
+    # url(r'^api/', include(api.urls))
+# ) + staticfiles_urlpatterns()
+
+
+
+
+
+# urlpatterns = [
+#     path('admin/', admin.site.urls),
+#     path('api/', api.urls),
+#     # static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+#     static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# ]
+
+# urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# urlpatterns += staticfiles_urlpatterns()

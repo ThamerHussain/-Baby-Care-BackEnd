@@ -1,11 +1,11 @@
 from ninja import Schema
 
 
-# one product 
+# one product
 class Display_product(Schema):
     name: str
     price: str
-    image: str
+    image_url: str
     stars: int
     description: str
     is_favorite: bool
@@ -14,15 +14,17 @@ class Display_product(Schema):
 class Display_Cart_products(Schema):
     name: str
     price: str
-    image: str
+    image_url: str
+    description: str
 
 
 class Display_products(Schema):
     name: str
     # description: str
     price: str
-    image: str
+    image_url: str
     stars: int
+    description: str
     # category: str
     # ClotheSubCategoryChoices: str = None
     # FoodSubCategoryChoices: str = None
@@ -44,7 +46,9 @@ class Display_doctors(Schema):
 
     Specialization: str
     # cv: str
-    image: str
+    image_url: str
+
+    cv: str
     # sunday: str
     # monday: str
     # tuesday: str

@@ -36,14 +36,14 @@ def display_product(request, pd : ProductId):
     # values = getattr(product, ['name', 'price', 'image', 'description'])
     # result = {'name': values[0], 'price': values[1], 'image': values[2], 'stars': values[3], 'description': values[4], 'is_favorite': is_favorite}
     result = {'name': product.name, 'price': product.price, 'image': f'{product.image}', 'stars': product.stars, 'description': product.description, 'is_favorite': is_favorite}
-    
+
     # name: str
     # price: str
     # image: str
     # stars: int
     # description: str
     # is_favorite: bool
-    
+
     return result
     # try:
     #     favo = Favourite.objects.get(product_id = id)
@@ -913,7 +913,7 @@ def create_rating(request , payload:Rating_In):
                 product_id = payload.product_id,
                 value = payload.value,
                 comment = payload.comment
-                
+
                 )
     rating.save()
     return rating
@@ -941,7 +941,7 @@ def display_current_profile(request):
 @baby_router.post("/Create_Favourite" ,  auth= AuthBearer())
 def Create_Favourite(request , payload:Fav):
     user = get_object_or_404(User, email= request.auth['email'])
-    
+
     try:
         product = Product.objects.get(name = payload.name)
         fa = Favourite.objects.get_or_create(
@@ -950,12 +950,12 @@ def Create_Favourite(request , payload:Fav):
                     )
         # fa.save()
         print("Record saved successfully!")
-        
-    
+
+
     except:
         print("Record doesn't exists")
     return 1
-    
+
 
 @baby_router.post("/Remove_Favourite", auth= AuthBearer())
 def Remove_Favourite(request , payload:Fav):
@@ -988,9 +988,9 @@ def get_the_fav_prod_from_the_current_user(request):
 @baby_router.post("/Add_item_to_cart", auth= AuthBearer())
 def Add_item_to_cart(request , payload:Cart_Info):
     user = get_object_or_404(User, email= request.auth['email'])
-    
+
     product = Product.objects.get(name = payload.name)
-    
+
     item = Item.objects.get_or_create(
                 user=user,
                 product_id = product.id,
@@ -1015,7 +1015,7 @@ def change_quplu(request , payload: qu):
     user = get_object_or_404(User, email= request.auth['email'])
     product = Product.objects.get(name = payload.name)
     item = Item.objects.get(product_id = product.id, user = user)
-    item.item_qty=item.item_qty +1
+    item.item_qty += 1
     item.save()
     return 1
 
@@ -1026,9 +1026,9 @@ def change_qu_min(request , payload: qu):
     user = get_object_or_404(User, email= request.auth['email'])
     product = Product.objects.get(name = payload.name)
     item = Item.objects.get(product_id = product.id, user = user)
-    if item.item_qty == 1: 
-        item.delete() 
-        return 1  
-    item.item_qty += 1
+    if item.item_qty == 1:
+        item.delete()
+        return 1
+    item.item_qty -= 1
     item.save()
     return 1
